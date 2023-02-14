@@ -1,4 +1,3 @@
-
 pipeline {
     triggers {
   pollSCM('* * * * *')
@@ -11,7 +10,27 @@ environment {
     registry = '076892551558.dkr.ecr.us-east-1.amazonaws.com/jenkins'
     registryCredential = 'aws_ecr_id'
     dockerimage = ''
+
+    // NEXUS_VERSION = "nexus3"
+    // NEXUS_PROTOCOL = "http"
+    // NEXUS_URL = "139.177.192.139:8081"
+    // NEXUS_REPOSITORY = "utrains-nexus-pipeline"
+    // NEXUS_CREDENTIAL_ID = "nexus-user-credentials"
 }
+
+// environment {
+       
+
+//         imageName = "fastfood"
+//         registryCredentials = "nexus-user-credentials"
+//         registry = "139.177.192.139:8085/repository/utrains-nexus-registry/"
+//         dockerImage = ''
+
+//         //Declare the variable version
+//         POM_VERSION = ''
+//         BUILD_NUM = "${env.BUILD_ID}"
+
+//     }
 
     stages {
 
@@ -69,7 +88,23 @@ environment {
                     }
                 }
             }
-        }    
+        } 
+
+        //Project Helm Chart push as tgz file
+        stage("pushing the Backend helm charts to nexus"){
+            steps{
+                script{
+                    withCredentials([string(credentialsId: 'nexus-pass', variable: 'docker_password')]) {
+                       
+                        sh '''
+                            helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
+                            tar -czvf  app-${helmversion}.tgz app/
+                            curl -u jenkins-user:$docker_password http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
+                        '''
+                    }
+                }
+            }
+        }   
          
          
     }
