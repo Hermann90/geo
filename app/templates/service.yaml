@@ -1,13 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-cip-service
+  name: geo-service
 spec:
   selector:
     app: geolocation
-    tier: backend
+    tier: frontend
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8082
-    type: LoadBalancer
+  - protocol: "TCP"
+    port: 80
+    targetPort: 8082
+  type: LoadBalancer
+...
