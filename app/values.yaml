@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: 076892551558.dkr.ecr.us-east-1.amazonaws.com/jenkins:0.0.6-RELEASE #updated url
+  repository: 076892551558.dkr.ecr.us-east-1.amazonaws.com/jenkins #updated url
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
