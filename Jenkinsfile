@@ -16,6 +16,7 @@ environment {
      NEXUS_URL = "139.177.192.139:8081"
      NEXUS_REPOSITORY = "utrains-nexus-pipeline"
      NEXUS_CREDENTIAL_ID = "nexus-user-credentials"
+     POM_VERSION = ''
 }
 
 // environment {
@@ -75,15 +76,15 @@ environment {
                 } 
             }
         }
-        // stage('Deploy image') {
-        //     steps{
-        //         script{ 
-        //             docker.withRegistry("https://"+registry,"ecr:us-east-1:"+registryCredential) {
-        //                 dockerImage.push()
-        //             }
-        //         }
-        //     }
-        // } 
+        stage('Deploy image') {
+            steps{
+                script{ 
+                    docker.withRegistry("https://"+registry,"ecr:us-east-1:"+registryCredential) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        } 
 
         //Project Helm Chart push as tgz file
         // stage("pushing the Backend helm charts to nexus"){
