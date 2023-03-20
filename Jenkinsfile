@@ -11,11 +11,11 @@ environment {
     registryCredential = 'aws_ecr_id'
     dockerimage = ''
 
-    // NEXUS_VERSION = "nexus3"
-    // NEXUS_PROTOCOL = "http"
-    // NEXUS_URL = "139.177.192.139:8081"
-    // NEXUS_REPOSITORY = "utrains-nexus-pipeline"
-    // NEXUS_CREDENTIAL_ID = "nexus-user-credentials"
+     NEXUS_VERSION = "nexus3"
+     NEXUS_PROTOCOL = "http"
+     NEXUS_URL = "139.177.192.139:8081"
+     NEXUS_REPOSITORY = "utrains-nexus-pipeline"
+     NEXUS_CREDENTIAL_ID = "nexus-user-credentials"
 }
 
 // environment {
@@ -42,22 +42,22 @@ environment {
             
             steps {
                 echo 'build & SonarQube analysis...'
-            //   withSonarQubeEnv('SonarServer') {
-            //       sh 'mvn sonar:sonar -Dsonar.projectKey=kserge2001_geolocation -Dsonar.java.binaries=.'
-            //   }
+               withSonarQubeEnv('SonarServer') {
+                   sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Hermann90_geo'
+               }
             }
           }
         stage('Check Quality Gate') {
             steps {
                 echo 'Checking quality gate...'
-                // script {
-                //     timeout(time: 20, unit: 'MINUTES') {
-                //         def qg = waitForQualityGate()
-                //         if (qg.status != 'OK') {
-                //             error "Pipeline stopped because of quality gate status: ${qg.status}"
-                //         }
-                //     }
-                // }
+                 script {
+                     timeout(time: 20, unit: 'MINUTES') {
+                         def qg = waitForQualityGate()
+                         if (qg.status != 'OK') {
+                             error "Pipeline stopped because of quality gate status: ${qg.status}"
+                         }
+                     }
+                 }
             }
         }
         
