@@ -35,12 +35,11 @@ environment {
     stages {
 
         stage("build & SonarQube analysis") {
-            agent {
-        docker { 
-            image 'maven:3.8.6-openjdk-11-slim' 
-            }
-            }    
-            
+        //     agent {
+        // docker { 
+        //     image 'maven:3.8.6-openjdk-11-slim' 
+        //     }
+        //     }    
             steps {
                 echo 'build & SonarQube analysis...'
                withSonarQubeEnv('SonarQube') {
