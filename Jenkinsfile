@@ -42,7 +42,7 @@ environment {
             
             steps {
                 echo 'build & SonarQube analysis...'
-               withSonarQubeEnv('SonarServer') {
+               withSonarQubeEnv('SonarQube') {
                    sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Hermann90_geo'
                }
             }
