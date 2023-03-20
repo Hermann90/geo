@@ -94,12 +94,12 @@ environment {
         stage("pushing the Backend helm charts to nexus"){
             steps{
                 script{
-                    withCredentials([string(credentialsId: 'nexus-pass', variable: 'docker_password')]) {
+                    withCredentials([string(credentialsId: 'nexus-pass', variable: 'NexusID')]) {
                        
                         sh '''
                             helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
                             tar -czvf  app-${helmversion}.tgz app/
-                            curl -u jenkins-user:$docker_password http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
+                            curl -u jenkins-user:$NexusID http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
                         '''
                     }
                 }
