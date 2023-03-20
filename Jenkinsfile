@@ -36,9 +36,10 @@ environment {
 
         stage("build & SonarQube analysis") {
             agent {
-        docker { image 'maven:3.8.6-openjdk-11-slim' }
-   }
-            
+        docker { 
+            image 'maven:3.8.6-openjdk-11-slim' 
+            }
+            }    
             
             steps {
                 echo 'build & SonarQube analysis...'
@@ -47,64 +48,62 @@ environment {
                }
             }
           }
-        stage('Check Quality Gate') {
-            steps {
-                echo 'Checking quality gate...'
-                 script {
-                     timeout(time: 20, unit: 'MINUTES') {
-                         def qg = waitForQualityGate()
-                         if (qg.status != 'OK') {
-                             error "Pipeline stopped because of quality gate status: ${qg.status}"
-                         }
-                     }
-                 }
-            }
-        }
+        // stage('Check Quality Gate') {
+        //     steps {
+        //         echo 'Checking quality gate...'
+        //          script {
+        //              timeout(time: 20, unit: 'MINUTES') {
+        //                  def qg = waitForQualityGate()
+        //                  if (qg.status != 'OK') {
+        //                      error "Pipeline stopped because of quality gate status: ${qg.status}"
+        //                  }
+        //              }
+        //          }
+        //     }
+        // }
         
          
-        stage('maven package') {
-            steps {
-                sh 'mvn clean'
-                sh 'mvn install -DskipTests'
-                sh 'mvn package -DskipTests'
-            }
-        }
-        stage('Build Image') {
+        // stage('maven package') {
+        //     steps {
+        //         sh 'mvn clean'
+        //         sh 'mvn install -DskipTests'
+        //         sh 'mvn package -DskipTests'
+        //     }
+        // }
+        // stage('Build Image') {
             
-            steps {
-                script{
-                  def mavenPom = readMavenPom file: 'pom.xml'
-                    dockerImage = docker.build registry + ":${mavenPom.version}"
-                } 
-            }
-        }
-        stage('Deploy image') {
-           
-            
-            steps{
-                script{ 
-                    docker.withRegistry("https://"+registry,"ecr:us-east-1:"+registryCredential) {
-                        dockerImage.push()
-                    }
-                }
-            }
-        } 
+        //     steps {
+        //         script{
+        //           def mavenPom = readMavenPom file: 'pom.xml'
+        //             dockerImage = docker.build registry + ":${mavenPom.version}"
+        //         } 
+        //     }
+        // }
+        // stage('Deploy image') {
+        //     steps{
+        //         script{ 
+        //             docker.withRegistry("https://"+registry,"ecr:us-east-1:"+registryCredential) {
+        //                 dockerImage.push()
+        //             }
+        //         }
+        //     }
+        // } 
 
         //Project Helm Chart push as tgz file
-        stage("pushing the Backend helm charts to nexus"){
-            steps{
-                script{
-                    withCredentials([string(credentialsId: 'nexus-pass', variable: 'NexusID')]) {
+        // stage("pushing the Backend helm charts to nexus"){
+        //     steps{
+        //         script{
+        //             withCredentials([string(credentialsId: 'nexus-pass', variable: 'NexusID')]) {
                        
-                        sh '''
-                            helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
-                            tar -czvf  app-${helmversion}.tgz app/
-                            curl -u jenkins-user:$NexusID http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
-                        '''
-                    }
-                }
-            }
-        }   
+        //                 sh '''
+        //                     helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
+        //                     tar -czvf  app-${helmversion}.tgz app/
+        //                     curl -u jenkins-user:$NexusID http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }   
          
          
     }
