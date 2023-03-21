@@ -89,7 +89,7 @@ environment {
         stage("pushing the Backend helm charts to nexus"){
             steps{
                 script{
-                    withCredentials([string(credentialsId: 'nexus-pass', variable: 'NexusID')]) {
+                    withCredentials([string(credentialsId: 'jenkins-user', variable: 'NexusID')]) {
                        
                         sh '''
                             helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
