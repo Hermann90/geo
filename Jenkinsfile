@@ -84,7 +84,6 @@ environment {
                 }
             }
         } 
-
         // Project Helm Chart push as tgz file
         stage("pushing the Backend helm charts to nexus"){
             steps{
