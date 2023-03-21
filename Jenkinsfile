@@ -84,21 +84,36 @@ environment {
         //         }
         //     }
         // } 
-        // Project Helm Chart push as tgz file
         stage("pushing the Backend helm charts to nexus"){
             steps{
                 script{
-                    withCredentials([string(credentialsId: 'nexus-pass', variable: 'docker_pass')]) {
+                    withCredentials([string(credentialsId: 'nexus-pass', variable: 'docker_password')]) {
                        
                         sh '''
-                            helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
-                            tar -czvf  app-${helmversion}.tgz app/
-                            curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
+                            helmversion=$( helm show chart fastfoodapp | grep version | cut -d: -f 2 | tr -d ' ')
+                            tar -czvf  fastfoodapp-${helmversion}.tgz fastfoodapp/
+                            curl -u jenkins-user:$docker_password http://139.177.192.139:8081/repository/fastfood-helm-rep/ --upload-file fastfoodapp-${helmversion}.tgz -v
                         '''
                     }
                 }
             }
-        }   
+        } 
+        // Project Helm Chart push as tgz file
+        // stage("pushing the Backend helm charts to nexus"){
+        //     steps{
+        //         script{
+        //             withCredentials([string(credentialsId: 'nexus-pass', variable: 'docker_pass')]) {
+                       
+        //                 sh '''
+        //                     helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
+        //                     tar -czvf  app-${helmversion}.tgz app/
+        //                     curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
+        //                 '''
+        //             }
+        //         }
+                
+        //     }
+        // }   
          	
          
     }
