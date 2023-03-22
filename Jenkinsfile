@@ -77,9 +77,9 @@ environment {
                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'nexus-pass', usernameVariable: 'jenkins-user', passwordVariable: 'docker_pass']]) {
                        
                         sh '''
-                            helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
-                            tar -czvf  app-${helmversion}.tgz app/
-                            curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
+                            echo "${POM_VERSION}"
+                            tar -czvf  app-$${POM_VERSION}.tgz app/
+                            curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${POM_VERSION}.tgz -v
                         '''
                     }
                 } 
