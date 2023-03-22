@@ -78,16 +78,16 @@ environment {
                             def mavenPom = readMavenPom file: 'pom.xml'
                             POM_VERSION = "${mavenPom.version}"
                             echo "${POM_VERSION}"
-
+                            echo "POM_VERSION=$(grep -v '\[' version.log)" > props.properties
                             sh '''
                             helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
                             echo ${helmversion}
                             tar -czvf  app-${helmversion}.tgz app/
                             curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
                             '''
-                            sh 'tar -czvf  app-${POM_VERSION}.tgz app/'
+                            sh 'tar -czvf  app-"${POM_VERSION}".tgz app/'
                             
-                            sh ' curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${POM_VERSION}.tgz -v'
+                            sh ' curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-"${POM_VERSION}".tgz -v'
                         
                     }
                 } 
