@@ -20,27 +20,27 @@ environment {
 }
     stages {
 
-        // stage("build & SonarQube analysis") {  
-        //     steps {
-        //         echo 'build & SonarQube analysis...'
-        //        withSonarQubeEnv('SonarServer') {
-        //            sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Hermann90_geo -X'
-        //        }
-        //     }
-        //   }
-        // stage('Check Quality Gate') {
-        //     steps {
-        //         echo 'Checking quality gate...'
-        //          script {
-        //              timeout(time: 20, unit: 'MINUTES') {
-        //                  def qg = waitForQualityGate()
-        //                  if (qg.status != 'OK') {
-        //                      error "Pipeline stopped because of quality gate status: ${qg.status}"
-        //                  }
-        //              }
-        //          }
-        //     }
-        // }
+        stage("build & SonarQube analysis") {  
+            steps {
+                echo 'build & SonarQube analysis...'
+               withSonarQubeEnv('SonarServer') {
+                   sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Hermann90_geo -X'
+               }
+            }
+          }
+        stage('Check Quality Gate') {
+            steps {
+                echo 'Checking quality gate...'
+                 script {
+                     timeout(time: 20, unit: 'MINUTES') {
+                         def qg = waitForQualityGate()
+                         if (qg.status != 'OK') {
+                             error "Pipeline stopped because of quality gate status: ${qg.status}"
+                         }
+                     }
+                 }
+            }
+        }
         
          
         stage('maven package') {
@@ -77,7 +77,7 @@ environment {
                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'nexus-pass', usernameVariable: 'jenkins-user', passwordVariable: 'docker_pass']]) {
                             def mavenPom = readMavenPom file: 'pom.xml'
                             POM_VERSION = "${mavenPom.version}"
-                            
+                            echo "${POM_VERSION}"
                             sh '''
                                 echo ${POM_VERSION}
                                 tar -czvf  app-${POM_VERSION}.tgz app/
