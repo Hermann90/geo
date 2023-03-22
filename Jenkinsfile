@@ -78,10 +78,10 @@ environment {
                             def mavenPom = readMavenPom file: 'pom.xml'
                             POM_VERSION = "${mavenPom.version}"
                             echo "${POM_VERSION}"
+                        sh 'tar -czvf  app-${POM_VERSION}.tgz app/'
+                            
+                        sh ' curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${POM_VERSION}.tgz -v'
                         
-                            tar -czvf  app-${POM_VERSION}.tgz app/
-                            curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${POM_VERSION}.tgz -v
-                       
                     }
                 } 
             }
