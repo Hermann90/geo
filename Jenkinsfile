@@ -80,9 +80,9 @@ environment {
                             echo "${POM_VERSION}"
 
                             sh '''
-                            helmversion=$( helm show chart fastfoodapp | grep version | cut -d: -f 2 | tr -d ' ')
+                            helmversion=$( helm show chart app | grep version | cut -d: -f 2 | tr -d ' ')
                             echo ${helmversion}
-                            tar -czvf  fastfoodapp-${helmversion}.tgz fastfoodapp/
+                            tar -czvf  app-${helmversion}.tgz app/
                             curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${helmversion}.tgz -v
                             '''
                             sh 'tar -czvf  app-${POM_VERSION}.tgz app/'
