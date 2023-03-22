@@ -75,10 +75,11 @@ environment {
             steps{
                 script{
                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'nexus-pass', usernameVariable: 'jenkins-user', passwordVariable: 'docker_pass']]) {
-                       
-                        sh '''
+                            def mavenPom = readMavenPom file: 'pom.xml'
+                            POM_VERSION = "${mavenPom.version}"
                             echo "${POM_VERSION}"
-                            tar -czvf  app-$${POM_VERSION}.tgz app/
+                        sh '''
+                            tar -czvf  app-${POM_VERSION}.tgz app/
                             curl -u jenkins-user:$docker_pass http://139.177.192.139:8081/repository/geolocation/ --upload-file app-${POM_VERSION}.tgz -v
                         '''
                     }
